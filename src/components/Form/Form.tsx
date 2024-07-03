@@ -1,13 +1,18 @@
-import {useState,ChangeEvent} from 'react'
+import {useState,ChangeEvent, FormEvent} from 'react'
+import Alert from '../Alert/Alert'
 import { SearchType } from '../../types'
 import { countries } from "../../data/countries"
 import styles from "./Form.module.css"
 
+
 const Form = () => {
+
     const [search,setSearch] = useState<SearchType>({
         city : "",
         country : "",
     })
+
+    const [alert,setAlert] = useState("")
     
     const handleChange = (e:ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
         setSearch({
@@ -16,8 +21,19 @@ const Form = () => {
         })
     }
 
+    const handleSubmit = ( e:FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if(Object.values(search).includes("")){
+            setAlert("Todos los campos son obligatorios")
+            return
+        }
+    }
+
     return (
-        <form className={styles.form}>
+        <form
+            className={styles.form}
+            onSubmit={handleSubmit}
+        >
             <div className={styles.field}>
 
                 <label htmlFor="city">Ciudad :</label>
@@ -27,7 +43,7 @@ const Form = () => {
                     name="city"
                     placeholder="ciudad"
                     value={search.city}
-                    onChange={ handleChange}
+                    onChange={handleChange}
                 />
             </div>
 
@@ -36,7 +52,7 @@ const Form = () => {
                 <select
                     id="country"
                     value={search.country}
-                    onChange={ handleChange}
+                    onChange={handleChange}
                 >
                     <option>--Seleccione un país</option>
                     {countries.map( country => (
@@ -51,10 +67,11 @@ const Form = () => {
 
             </div>
            
+            {alert && <Alert>{alert}</Alert>}
 
             <input className={styles.submit} type="submit" value="Consultar Clima" />
         </form>
     )
-}
 
+}
 export default Form

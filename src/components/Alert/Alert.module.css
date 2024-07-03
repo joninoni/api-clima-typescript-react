@@ -1,0 +1,11 @@
+.alert{
+    padding: .5rem;
+    background-color: hwb(0 0% 0% / 0.832);
+    border-radius: 1rem;
+}
+.alert p{
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    font-weight: 900;
+}
