@@ -6,9 +6,6 @@ function App() {
 
    const {fetchWeather} = useWeather()
 
-   console.log(import.meta.env);
-   
-
     return (
         <>
             <h1 className={styles.title}>Buscador del clima</h1>
