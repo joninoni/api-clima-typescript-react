@@ -4,8 +4,11 @@ import { SearchType } from '../../types'
 import { countries } from "../../data/countries"
 import styles from "./Form.module.css"
 
+type FormProps = {
+    fetchWeather : (search: SearchType) => void
+}
 
-const Form = () => {
+const Form = ({fetchWeather} : FormProps) => {
 
     const [search,setSearch] = useState<SearchType>({
         city : "",
@@ -14,7 +17,7 @@ const Form = () => {
 
     const [alert,setAlert] = useState("")
     
-    const handleChange = (e:ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e:ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {      
         setSearch({
             ...search,
             [e.target.id] : e.target.value
@@ -27,6 +30,8 @@ const Form = () => {
             setAlert("Todos los campos son obligatorios")
             return
         }
+        // aqui ya paso la validacion
+        fetchWeather(search)
     }
 
     return (
@@ -40,7 +45,6 @@ const Form = () => {
                 <input 
                     type="text"
                     id="city"
-                    name="city"
                     placeholder="ciudad"
                     value={search.city}
                     onChange={handleChange}
