@@ -1,6 +1,6 @@
 import axios from "axios"
 // import {z} from "zod"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import {object,string,number,InferOutput,parse,array} from "valibot"
 import { SearchType} from "../types"
 
@@ -57,6 +57,8 @@ const useWeather = () => {
             temp_min:0,
         }
     })
+
+    const hasWeatherData = useMemo( () => weather.name ,[weather.name])
 
     const fetchWeather = async (search : SearchType ) => {
 
@@ -121,7 +123,8 @@ const useWeather = () => {
 
     return {
         weather,
-        fetchWeather
+        fetchWeather,
+        hasWeatherData,
     }
 }
 
