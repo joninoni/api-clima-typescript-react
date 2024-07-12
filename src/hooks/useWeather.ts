@@ -1,6 +1,7 @@
 import axios from "axios"
 // import {z} from "zod"
-import {object,string,number,InferOutput,parse} from "valibot"
+import { useState } from "react"
+import {object,string,number,InferOutput,parse,array} from "valibot"
 import { SearchType} from "../types"
 
 
@@ -36,9 +37,27 @@ const weatherSchema = object({
         temp_min : number(),
     })
 })
-type Weather = InferOutput<typeof weatherSchema>
+export type Weather = InferOutput<typeof weatherSchema>
+
+const geoDataSchema = array(
+    object({
+        lat : number(),
+        lon : number()
+    })
+)
+// type GeoData = InferOutput<typeof geoDataSchema>
 
 const useWeather = () => {
+
+    const [weather,seWeather] = useState<Weather>({
+        name : "",
+        main : {
+            temp : 0,
+            temp_max : 0,
+            temp_min:0,
+        }
+    })
+
     const fetchWeather = async (search : SearchType ) => {
 
         const apiKey = import.meta.env.VITE_API_KEY;
@@ -47,10 +66,17 @@ const useWeather = () => {
             const url = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${apiKey}`
 
             const{ data }= await axios(url)
+            const resultData = parse(geoDataSchema,data)
+
+            if(!resultData){
+                console.log("resultado en altitud y longitud");
+                return
+            }
 
             const lat = data[0].lat
             const lon = data[0].lon
-
+            
+            //haciendo el segundo llamado a la api del clima
             const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
 
             //Caster los datos
@@ -82,18 +108,19 @@ const useWeather = () => {
             const {data : weatherResult} = await axios(weatherUrl)
             const result = parse(weatherSchema,weatherResult)
              if(result){
-                console.log("resultado aprobado");
+                seWeather(result)
             }
             else{
                 console.log("resultado incorrecto");
             }
-        } 
+        }
         catch (error) {
             console.log(error);
-        }
+        } 
     }
 
     return {
+        weather,
         fetchWeather
     }
 }
