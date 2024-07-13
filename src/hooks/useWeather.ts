@@ -75,7 +75,7 @@ const useWeather = () => {
         setNotFound("")
 
         try {
-            const url = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${apiKey}`
+            const url = `https://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${apiKey}`
 
             const{ data }= await axios(url)
             const resultData = parse(geoDataSchema,data)
