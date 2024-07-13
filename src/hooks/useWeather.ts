@@ -49,20 +49,27 @@ const geoDataSchema = array(
 
 const useWeather = () => {
 
-    const [weather,seWeather] = useState<Weather>({
+    const initialState = {
         name : "",
         main : {
             temp : 0,
             temp_max : 0,
             temp_min:0,
         }
-    })
+    }
+
+    const [weather,seWeather] = useState<Weather>(initialState)
+
+    const [loading,setLoading] = useState(false)//para mostrar el spinner u ocultarlo
 
     const hasWeatherData = useMemo( () => weather.name ,[weather.name])
 
     const fetchWeather = async (search : SearchType ) => {
 
         const apiKey = import.meta.env.VITE_API_KEY;
+
+        setLoading(true)
+        seWeather(initialState)
 
         try {
             const url = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${apiKey}`
@@ -118,13 +125,17 @@ const useWeather = () => {
         }
         catch (error) {
             console.log(error);
-        } 
+        }
+        finally{
+            setLoading(false)
+        }
     }
 
     return {
         weather,
         fetchWeather,
         hasWeatherData,
+        loading,
     }
 }
 
