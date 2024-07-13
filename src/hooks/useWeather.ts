@@ -62,6 +62,8 @@ const useWeather = () => {
 
     const [loading,setLoading] = useState(false)//para mostrar el spinner u ocultarlo
 
+    const [notFound,setNotFound] = useState("")//para guardar un error en caso de que no se encuentre la ciudad
+
     const hasWeatherData = useMemo( () => weather.name ,[weather.name])
 
     const fetchWeather = async (search : SearchType ) => {
@@ -70,6 +72,7 @@ const useWeather = () => {
 
         setLoading(true)
         seWeather(initialState)
+        setNotFound("")
 
         try {
             const url = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${apiKey}`
@@ -77,8 +80,9 @@ const useWeather = () => {
             const{ data }= await axios(url)
             const resultData = parse(geoDataSchema,data)
 
-            if(!resultData){
+            if(!resultData[0]){
                 console.log("resultado en altitud y longitud");
+                setNotFound("Ciudad no encontrada")
                 return
             }
 
@@ -133,9 +137,10 @@ const useWeather = () => {
 
     return {
         weather,
+        loading,
+        notFound,
         fetchWeather,
         hasWeatherData,
-        loading,
     }
 }
 
