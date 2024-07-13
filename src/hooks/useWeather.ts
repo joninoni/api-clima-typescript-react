@@ -81,7 +81,6 @@ const useWeather = () => {
             const resultData = parse(geoDataSchema,data)
 
             if(!resultData[0]){
-                console.log("resultado en altitud y longitud");
                 setNotFound("Ciudad no encontrada")
                 return
             }
